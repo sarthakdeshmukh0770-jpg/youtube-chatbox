@@ -20,6 +20,9 @@ st.set_page_config(page_title="youtube chat box")
 st.title("write any query about any  youtube video ")
 if "messages" not in st.session_state:
     st.session_state.messages=[]
+history=" "
+for msg in st.session_state.messages:
+    history+=f"{msg['role']}:{msg['content']}\n"
 load_dotenv()
  #----------model---------
 llm=HuggingFaceEndpoint(
@@ -32,9 +35,10 @@ promt=PromptTemplate(
     template="""your the very hepful assitance 
     answer the question from only provide transcripted text 
     if you dont know the answer just say i dont know 
+    conversion_history={history}
     text={text}
     questioned={question}""",
-    input_variables=['text','question']
+    input_variables=['text','question','history']
 )
 youtube_url = st.text_input("Enter YouTube URL")
 video_id = None
@@ -87,13 +91,13 @@ if question:
         )
         retrive_text=retriver.invoke(question)
         context_text="\n\n".join(doc.page_content for doc in retrive_text)
-        final_promt=promt.invoke({'text':context_text,'question':question})
+        final_promt=promt.invoke({'text':context_text,'question':question,'history':history})
         with st.spinner("searching........."):
             final_llm=model.invoke(final_promt)
-        st.chat_message("assitant").markdown(final_llm.content)
+        st.chat_message("assistant").markdown(final_llm.content)
         st.session_state.messages.append(
             {
-                "role":"assitance",
+                "role":"assistant",
                 "content":final_llm.content
             }
         )
