@@ -7,6 +7,7 @@ from langchain_core.prompts import PromptTemplate
 from dotenv import load_dotenv
 from urllib.parse import urlparse, parse_qs
 import streamlit as st 
+
 def get_video_id(url):
     paser_url=urlparse(url)
     if paser_url.hostname=="www.youtube.com":
@@ -17,6 +18,8 @@ def get_video_id(url):
 # # ----streamlit--------
 st.set_page_config(page_title="youtube chat box")
 st.title("write any query about any  youtube video ")
+if "messages" not in st.session_state:
+    st.session_state.messages=[]
 load_dotenv()
  #----------model---------
 llm=HuggingFaceEndpoint(
@@ -70,13 +73,28 @@ if video_id:
     search_kwargs={"k":5}
 )
 # -----------------input_loop_--------------
-    question=st.text_input("ask a questione ")
-    if st.button("ask"):
+for message in st.session_state.messages:
+    with st.chat_message(message["role"]):
+        st.markdown(message["content"])
+question=st.chat_input("ask a questione ")
+if question:
+        st.chat_message('user').markdown(question)
+        st.session_state.messages.append(
+            {
+                'role':"user",
+                'content':question
+            }
+        )
         retrive_text=retriver.invoke(question)
         context_text="\n\n".join(doc.page_content for doc in retrive_text)
         final_promt=promt.invoke({'text':context_text,'question':question})
         with st.spinner("searching........."):
             final_llm=model.invoke(final_promt)
-        st.subheader("answer")
-        st.write(final_llm.content)
+        st.chat_message("assitant").markdown(final_llm.content)
+        st.session_state.messages.append(
+            {
+                "role":"assitance",
+                "content":final_llm.content
+            }
+        )
         
