@@ -87,17 +87,8 @@ with st.sidebar:
         <div style="text-align:center; font-size:14px; color:gray;">
              <b>🎥 YouTube RAG ChatBot</b><br><br>
 
-            👨‍💻 <b>Developed by</b><br>
-            Sarthak Deshmukh<br><br>
-
-            <a href="https://github.com/sarthakdeshmukh0770-jpg" target="_blank">
-             🔗 GitHub
-            </a>
-            <br><br>
-
-            <small>Version 1.0.0</small>
-        </div>
-        """,
+            👨‍💻 Developed by
+            Sarthak Deshmukh""",
         unsafe_allow_html=True,
     )
 # # ----streamlit--------
