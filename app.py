@@ -102,8 +102,13 @@ model=ChatHuggingFace(llm=llm)
 #-----------promts-----------
 promt=PromptTemplate(
     template="""your the very hepful assitance 
-    answer the question from only provide transcripted text 
-    if you dont know the answer just say i dont know 
+    if user message is a greeing,farwell,thank,or casual conversation respond  naturally
+    without relying on the transcript ,
+    if user asks about the uploded video,answer using the provided context
+    if the answer is not in the context,clearly state that video doesnt containn that information,
+    and optionally provide a genral answer if appropriate used your brain capacity rather than directy say i dont konw
+    and do not respons like based on provided content just answer the questioned directly  
+    
     conversion_history={history}
     text={text}
     questioned={question}""",
